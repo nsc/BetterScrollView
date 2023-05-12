@@ -8,58 +8,56 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State var items: [Int] = [0,1,2,3,4,5]
-    @State var isScrolledToBottom = false
-    
+    @State var items: [Int] = Array(0...20)
+
     var body: some View {
         ScrollViewReader { proxy in
-            NavigationStack {
-                HStack {
-                    BetterScrollView(isScrolledToBottom: $isScrolledToBottom) {
-                        ForEach(items, id: \.self) { i in
-                            VStack {
-                                Image(systemName: "globe")
-                                    .imageScale(.large)
-                                    .foregroundColor(.accentColor)
-                                Text("Hello, world!")
-                                    .foregroundColor(Color(hue: (Double(i) / 18).truncatingRemainder(dividingBy: 1), saturation: 1, brightness: 0.8))
+            BetterScrollViewReader { betterProxy in
+                NavigationStack {
+                    HStack {
+                        BetterScrollView {
+                            ForEach(items, id: \.self) { i in
+                                VStack {
+                                    Image(systemName: "globe")
+                                        .imageScale(.large)
+                                        .foregroundColor(.accentColor)
+                                    Text("Hello, world!")
+                                        .foregroundColor(Color(hue: (Double(i) / 18).truncatingRemainder(dividingBy: 1), saturation: 1, brightness: 0.8))
+                                }
+                                .id(i)
                             }
-                            .id(i)
+                            .navigationTitle(["Bla", "Blub"].randomElement()!)
                         }
-                        .navigationTitle(["Bla", "Blub"].randomElement()!)
-                    }
-                    .border(.green)
-                    
-                    ScrollView([.horizontal, .vertical]) {
-                        ForEach(items, id: \.self) { i in
-                            VStack {
-                                Image(systemName: "globe")
-                                    .imageScale(.large)
-                                    .foregroundColor(.accentColor)
-                                Text("Hello, world!")
-                                    .foregroundColor(Color(hue: (Double(i) / 18).truncatingRemainder(dividingBy: 1), saturation: 1, brightness: 0.8))
+                        .border(.green)
+
+                        ScrollView([.horizontal, .vertical]) {
+                            ForEach(items, id: \.self) { i in
+                                VStack {
+                                    Image(systemName: "globe")
+                                        .imageScale(.large)
+                                        .foregroundColor(.accentColor)
+                                    Text("Hello, world!")
+                                        .foregroundColor(Color(hue: (Double(i) / 18).truncatingRemainder(dividingBy: 1), saturation: 1, brightness: 0.8))
+                                }
+                                .id(i)
                             }
-                            .id(i)
+                        }
+                        .border(.red)
+                    }
+                }
+                .scrollIndicators(.visible)
+                .toolbar {
+                    ToolbarItem {
+                        Button("Add Something") {
+                            items.append(items.count)
                         }
                     }
-                    .border(.red)
-                }
-            }
-            .scrollIndicators(.visible)
-            .toolbar {
-                ToolbarItem {
-                    Button("Add Something") {
-                        items.append(items.count)
+                    ToolbarItem {
+                        Button("Scroll to Bottom") {
+                            proxy.scrollTo(items.last!)
+                            betterProxy.scrollToBottom()
+                        }
                     }
-                }
-                ToolbarItem {
-                    Button("Scroll to Bottom") {
-                        proxy.scrollTo(items.last!)
-                        isScrolledToBottom.toggle()
-                    }
-                }
-                ToolbarItem {
-                    Text(isScrolledToBottom ? "is scrolled to bottom" : "is not scrolled to bottom")
                 }
             }
         }

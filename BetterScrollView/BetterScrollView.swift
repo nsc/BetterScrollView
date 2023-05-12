@@ -1,11 +1,10 @@
 import SwiftUI
 
 struct BetterScrollView<Content: View>: NSViewRepresentable {
-    @Binding var isScrolledToBottom: Bool
     @ViewBuilder var content: Content
     
     class Coordinator {
-        init(content: Content, isScrolledToBottom: Binding<Bool>) {
+        init(content: Content) {
             let documentView = NSHostingView(rootView: content)
             
             documentView.translatesAutoresizingMaskIntoConstraints = false
@@ -21,13 +20,11 @@ struct BetterScrollView<Content: View>: NSViewRepresentable {
             scrollView.documentView = documentView
             
             self.scrollView = scrollView
-            self.isScrolledToBottom = isScrolledToBottom
         }
         
         var documentView: NSHostingView<Content>
         var scrollView: NSScrollView
-        var isScrolledToBottom: Binding<Bool>
-        
+
         var clipView: NSClipView {
             scrollView.contentView
         }
@@ -37,7 +34,7 @@ struct BetterScrollView<Content: View>: NSViewRepresentable {
             
             documentView.rootView = content
             
-            if wasScrolledToBottom || isScrolledToBottom.wrappedValue {
+            if wasScrolledToBottom {
                 clipView.scroll(to: CGPoint(x: 0, y: CGFloat.greatestFiniteMagnitude))
             }
             
@@ -64,7 +61,7 @@ struct BetterScrollView<Content: View>: NSViewRepresentable {
     }
     
     func makeCoordinator() -> Coordinator {
-        Coordinator(content: content, isScrolledToBottom: _isScrolledToBottom)
+        Coordinator(content: content)
     }
 
     func makeNSView(context: Context) -> NSScrollView {

@@ -9,13 +9,12 @@ import SwiftUI
 
 struct ContentView: View {
     @State var items: [Int] = [0,1,2,3,4,5]
-    @State var isScrolledToBottom = false
-    
+
     var body: some View {
         ScrollViewReader { proxy in
             NavigationStack {
                 HStack {
-                    BetterScrollView(isScrolledToBottom: $isScrolledToBottom) {
+                    BetterScrollView {
                         ForEach(items, id: \.self) { i in
                             VStack {
                                 Image(systemName: "globe")
@@ -55,11 +54,7 @@ struct ContentView: View {
                 ToolbarItem {
                     Button("Scroll to Bottom") {
                         proxy.scrollTo(items.last!)
-                        isScrolledToBottom.toggle()
                     }
-                }
-                ToolbarItem {
-                    Text(isScrolledToBottom ? "is scrolled to bottom" : "is not scrolled to bottom")
                 }
             }
         }
